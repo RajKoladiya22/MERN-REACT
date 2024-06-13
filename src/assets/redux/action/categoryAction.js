@@ -1,35 +1,34 @@
-import { useState } from "react";
 import axios from "../../utils/axiosConfig";
 import { toast } from "react-toastify";
 
-export const GET_PRODUCT = () => {
+export const GET_CATEGORY = () => {
   return async (dispatch) => {
     try {
-      const response = await axios.get("/api/v1/Products");
-
+      const response = await axios.get("/api/v1/Categorys");
+       
       dispatch({
-        type: "GET_PRODUCT_SUCCESS",
-        payload: response,
+        type: "GET_CATEGORY_SUCCESS",
+        payload: response.data,
       });
     } catch (err) {
-      toast.err(`Error: ${err.response.data.message}`);
-      console.log(`Error: ${err.response.data.message}`);
+      toast.error(`Error: ${err.response.data.message}`);
       return false;
     }
   };
 };
 
-export const POST_PRODUCT = (product) => {
+export const POST_CATEGORY = (category) => {
   return async (dispatch) => {
-    dispatch({ type: "PRODUCT_UPLOAD_START" });
+    dispatch({ type: 'CATEGORY_UPLOAD_START' });
     try {
-      const response = await axios.post("/api/v1/addProduct", product, {
+      const response = await axios.post("/api/v1/createCategory", category, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       if (response) {
-        dispatch(GET_PRODUCT());
+        console.log('done')
+        dispatch(GET_CATEGORY());
         toast(`${response.data.message}`);
       }
     } catch (err) {
@@ -37,18 +36,17 @@ export const POST_PRODUCT = (product) => {
       console.log(`Error: ${err.response.data.message}`);
       console.log(err);
       return false;
-    } finally {
-      dispatch({ type: "PRODUCT_UPLOAD_END" });
+    }finally {
+      dispatch({ type: 'CATEGORY_UPLOAD_END' });
     }
   };
 };
 
-export const   DELETE_PRODUCT = (id) => {
-  console.log(id);
+export const   DELETE_CATEGORY = (id) => {
   return async (dispatch) => {
-    const response = await axios.delete(`/api/v1/DeleteProduct?id=${id}`);
+    const response = await axios.delete(`/api/v1/DeleteCategory?id=${id}`);
     if (response) {
-      dispatch(GET_PRODUCT());
+      dispatch(GET_CATEGORY());
       toast(`${response.data.message}`);
     }
 
